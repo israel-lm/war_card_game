@@ -2,14 +2,35 @@
 This is an implementation of a simulator of the War card game
 """
 import random
+import time
+import os
 from deck import Card, Deck
 
 class Game():
+
+
     def __init__(self):
         self.deck = None
         self.deck_player1 = None
         self.deck_player2 = None
         self.winner_pile = []
+
+
+    def display_board(self, card1, card2, winner):
+        """Print the board with current marks"""
+        os.system('clear')
+        board = """
+            Player      | 1             |  2
+            --------------------------------
+            deck size   | {}            | {}
+            --------------------------------
+            top card    | {}   | {}
+            ---------------------------------
+            {} takes cards
+            """.format(self.deck_player1.get_deck_size(),\
+              self.deck_player2.get_deck_size(), card1, card2, winner)
+        print(board)
+        time.sleep(2)
 
     def generate_deck_cards(self):
         cards = [0]*52
@@ -24,22 +45,21 @@ class Game():
         return Deck(cards)
 
     def compare_and_take(self, card1, card2):
-        print(f"Player 1: {str(card1)} ---- Player 2: {str(card2)}")
 
         self.winner_pile.append(card1)
         self.winner_pile.append(card2)
+        winner = ""
 
         if card1.compare(card2) == 0:
             return False
         elif card1.compare(card2) > 0:
-            print("Player 1 takes cards")
+            winner = "Player1"
             self.deck_player1.add_card(self.winner_pile)
         else:
-            print("Player 2 takes cards")
+            winner = "Player2"
             self.deck_player2.add_card(self.winner_pile)
 
-        print(f"Player1 deck size: {self.deck_player1.get_deck_size()}")
-        print(f"Player2 deck size: {self.deck_player2.get_deck_size()}")
+        self.display_board(card1, card2, winner)
         return True
 
     def start_war(self):
